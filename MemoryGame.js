@@ -122,7 +122,7 @@ var Level = function (evt, rows, cols, matches) {
                 flipper.className = 'flipper flipfront pulse';
 
                 pulseTimer = window.setTimeout(function () {
-                    flipper.style.opacity = '0.3';
+                    flipper.parentNode.style.opacity = '0.3';
                 }, 1000);
 
                 pulseTimer = null;
