@@ -42,7 +42,7 @@ var Level = function (evt, rows, cols, matches) {
     "use strict";
 
     var cardsList           = '!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVW[\\]^_`abcdefghijklmnopqrstuvwxyzÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜ',
-        animalList           = ['cat', 'dog'],
+        animalList           = ['bird', 'cat', 'cow', 'crocodile', 'dog', 'donkey', 'elephant', 'frog', 'giraffe', 'goat', 'horse', 'lion', 'monkey', 'mouse', 'rabbit', 'sheep', 'snake', 'spider'],
         playfieldWrapper    = document.getElementById('playfield-wrapper'),
         playfield           = document.createElement('table'),
         cards               = [],
@@ -273,7 +273,15 @@ var MemoryGame = function (evt) {
         lvlCtrls    = document.getElementById('levels'),
         lvls        = [
             {'rows': 2, 'cols': 2, 'matches': 2},
-            {'rows': 2, 'cols': 3, 'matches': 2}
+            {'rows': 2, 'cols': 3, 'matches': 2},
+            {'rows': 3, 'cols': 3, 'matches': 2},
+            {'rows': 3, 'cols': 4, 'matches': 2},
+            {'rows': 4, 'cols': 4, 'matches': 2},
+            {'rows': 4, 'cols': 5, 'matches': 2},
+            {'rows': 5, 'cols': 5, 'matches': 2},
+            {'rows': 5, 'cols': 6, 'matches': 2},
+            {'rows': 5, 'cols': 7, 'matches': 2},
+            {'rows': 5, 'cols': 8, 'matches': 2}
         ],
         lastBtn     = lvlCtrls.childNodes[1],
         btn         = null,
