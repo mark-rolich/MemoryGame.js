@@ -78,6 +78,7 @@ var Level = function (evt, rows, cols, matches) {
                     let source = document.createElement('source');
                     source.src = this.video;
                     content.muted=true;
+                    content.preload=true;
                     content.appendChild(source);
                 }
 
@@ -177,19 +178,18 @@ var Level = function (evt, rows, cols, matches) {
                     return;
                 }
 
+                if (card.video != null){
+                    card.content.currentTime = 1;
+                    card.content.play();
+                }
+
                 if (openCards.length === 0) {
                     openCards.push(card);
-                    if (card.video != null){
-                        card.content.play();
-                    }
                 } else if (!openCards.in_array(card) && openCards.length < matches) {
-                    if (openCards[openCards.length - 1].pair === card.pair) {
+                    if (openCards[0].pair === card.pair) {
                         openCards.push(card);
 
                         if (openCards.length === matches) {
-                            if (card.video != null){
-                                card.content.play();
-                            }
                             card.flip(0);
 
                             for (i = 0; i < openCards.length; i = i + 1) {
@@ -202,11 +202,9 @@ var Level = function (evt, rows, cols, matches) {
                             openCards = [];
                         }
                     } else {
-                        if (card.video != null){
-                            card.content.play();
-                        }
                         evt.detach('mousedown', playfield, mouseHndl);
 
+                        let cardMultiplier = card.video!=null?4:1;
                         backFlipTimer = window.setTimeout(function () {
                             card.flip(1);
 
@@ -216,7 +214,7 @@ var Level = function (evt, rows, cols, matches) {
 
                             openCards = [];
                             mouseHndl = evt.attach('mousedown', playfield, play);
-                        }, 1000);
+                        }, cardMultiplier * 1000);
 
                         backFlipTimer = null;
                     }
