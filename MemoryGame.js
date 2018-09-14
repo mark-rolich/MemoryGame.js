@@ -51,12 +51,14 @@ var Level = function (evt, rows, cols, matches) {
         clicksCnt           = 0,
         matchCount          = 0,
         openCards           = [],
-        Card                = function (image, pair) {
+        Card                = function (image, video, pair) {
             this.state      = 0;
             this.freezed    = 0;
             this.image      = image;
+            this.video      = video;
             this.pair       = pair;
-            this.clicksCnt     = 0;
+            this.clicksCnt  = 0;
+            this.content = null;
 
             var flipper = null,
                 front   = null,
@@ -68,13 +70,13 @@ var Level = function (evt, rows, cols, matches) {
                     content = null;
 
                 flipper = card.cloneNode(false);
-                if (this.image.endsWith('svg')){
+                if (this.image != null){
                     content = document.createElement('img');
                     content.src = this.image;
-                } else if (this.image.endsWith('.mp4')){
+                } else if (this.video != null){
                     content = document.createElement('video');
                     let source = document.createElement('source');
-                    source.src = this.image;
+                    source.src = this.video;
                     content.appendChild(source);
                 }
 
@@ -92,9 +94,9 @@ var Level = function (evt, rows, cols, matches) {
                 front.appendChild(content);
                 front.appendChild(clicks);
 
-                content = content.cloneNode(false);
-                content.nodeValue = '\xA0';
-
+                this.content = content;
+                // content = content.cloneNode(false);
+                // content.nodeValue = '\xA0';
                 // back.appendChild(txt);
 
                 flipper.appendChild(back);
@@ -139,9 +141,9 @@ var Level = function (evt, rows, cols, matches) {
             };
         },
         prepare             = function () {
-            for (let i = 0; i< (rows * cols)/2; i = i + 1){
-                cards.push(new Card(`assets/images/${animalList[i]}.svg`, i));
-                cards.push(new Card(`assets/videos/${animalList[i]}.mp4`, i));
+            for (let i = 0; i< (rows * cols)/matches; i = i + 1){
+                cards.push(new Card(`assets/images/${animalList[i]}.svg`,null, i));
+                cards.push(new Card(null, `assets/videos/${animalList[i]}.mp4`, i));
             }
 
             cards.shuffle();
@@ -196,11 +198,17 @@ var Level = function (evt, rows, cols, matches) {
 
                 if (openCards.length === 0) {
                     openCards.push(card);
+                    if (card.video != null){
+                        card.content.play();
+                    }
                 } else if (!openCards.in_array(card) && openCards.length < matches) {
                     if (openCards[openCards.length - 1].pair === card.pair) {
                         openCards.push(card);
 
                         if (openCards.length === matches) {
+                            if (card.video != null){
+                                card.content.play();
+                            }
                             card.flip(0);
 
                             for (i = 0; i < openCards.length; i = i + 1) {
@@ -224,7 +232,7 @@ var Level = function (evt, rows, cols, matches) {
 
                             openCards = [];
                             mouseHndl = evt.attach('mousedown', playfield, play);
-                        }, 300);
+                        }, 1000);
 
                         backFlipTimer = null;
                     }
