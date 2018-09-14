@@ -221,6 +221,9 @@ var Level = function (evt, rows, cols, matches) {
                             openCards = [];
                         }
                     } else {
+                        if (card.video != null){
+                            card.content.play();
+                        }
                         evt.detach('mousedown', playfield, mouseHndl);
 
                         backFlipTimer = window.setTimeout(function () {
