@@ -1,9 +1,9 @@
 MemoryGame.js
 =================
 
-MemoryGame.js is a Javascript implementation of Memory Game (http://en.wikipedia.org/wiki/Concentration_(game)).
+This is an implementation of memory to learn animals in DGS (deutsche Gebärdensprache).
 
-Demo is available at http://gellardo.github.com/MemoryGame.js
+Demo is available [here](https://gellardo.github.io/MemoryGame.js/MemoryGame.html).
 
 MemoryGame.js requires Event.js package, which can be acquired at the following links:
 
