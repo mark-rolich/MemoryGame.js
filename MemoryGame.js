@@ -44,7 +44,7 @@ var Level = function (evt, rows, cols, matches) {
     var cardsList           = '!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVW[\\]^_`abcdefghijklmnopqrstuvwxyzÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜ',
         animalList           = ['bird', 'cat', 'cow', 'crocodile', 'dog', 'donkey', 'elephant', 'frog', 'giraffe', 'goat', 'horse', 'lion', 'monkey', 'mouse', 'rabbit', 'sheep', 'snake', 'spider'],
         playfieldWrapper    = document.getElementById('playfield-wrapper'),
-        playfield           = document.createElement('table'),
+        playfield           = document.createElement('div'),
         cards               = [],
         mouseHndl           = null,
         self                = this,
@@ -150,33 +150,13 @@ var Level = function (evt, rows, cols, matches) {
             cards.shuffle();
         },
         draw                = function () {
-            var tbody       = document.createElement('tbody'),
-                row         = document.createElement('tr'),
-                cell        = document.createElement('td'),
-                rowFrag     = document.createDocumentFragment(),
-                cellFrag    = document.createDocumentFragment(),
-                k           = 0;
-
+            let k           = 0;
             prepare();
 
-            for (let i = 0; i < rows; i = i + 1) {
-                row = row.cloneNode(false);
-
-                for (let j = 0; j < cols; j = j + 1) {
-                    cell = cell.cloneNode(false);
-
-                    cards[k].draw(k, cell);
-                    cellFrag.appendChild(cell);
-
-                    k = k + 1;
-                }
-
-                row.appendChild(cellFrag);
-                rowFrag.appendChild(row);
+            for (let i = 0; i< (rows*cols); i= i+1) {
+                cards[i].draw(k, playfield);
+                k++;
             }
-
-            tbody.appendChild(rowFrag);
-            playfield.appendChild(tbody);
             playfieldWrapper.replaceChild(playfield, playfieldWrapper.childNodes[0]);
         },
         play                = function (e, src) {

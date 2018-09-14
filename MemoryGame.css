@@ -135,6 +135,7 @@ p strong {
 }
 
 .play-field {
+    display: flex;
     margin: 0;
     padding: 0;
     border-collapse: collapse;
