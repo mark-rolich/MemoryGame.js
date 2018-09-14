@@ -42,6 +42,7 @@ var Level = function (evt, rows, cols, matches) {
     "use strict";
 
     var cardsList           = '!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVW[\\]^_`abcdefghijklmnopqrstuvwxyzÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜ',
+        animalList           = ['cat', 'dog'],
         playfieldWrapper    = document.getElementById('playfield-wrapper'),
         playfield           = document.createElement('table'),
         cards               = [],
@@ -50,10 +51,10 @@ var Level = function (evt, rows, cols, matches) {
         clicksCnt           = 0,
         matchCount          = 0,
         openCards           = [],
-        Card                = function (text, pair) {
+        Card                = function (image, pair) {
             this.state      = 0;
             this.freezed    = 0;
-            this.text       = text;
+            this.image      = image;
             this.pair       = pair;
             this.clicksCnt     = 0;
 
@@ -64,9 +65,18 @@ var Level = function (evt, rows, cols, matches) {
 
             this.draw = function (idx, container) {
                 var card    = document.createElement('div'),
-                    txt     = document.createTextNode(this.text);
+                    content = null;
 
                 flipper = card.cloneNode(false);
+                if (this.image.endsWith('svg')){
+                    content = document.createElement('img');
+                    content.src = this.image;
+                } else if (this.image.endsWith('.mp4')){
+                    content = document.createElement('video');
+                    let source = document.createElement('source');
+                    source.src = this.image;
+                    content.appendChild(source);
+                }
 
                 front   = card.cloneNode(false);
                 back    = card.cloneNode(false);
@@ -79,13 +89,13 @@ var Level = function (evt, rows, cols, matches) {
                 clicks.className = 'clicks';
                 clicks.appendChild(document.createTextNode('\xA0'));
 
-                front.appendChild(txt);
+                front.appendChild(content);
                 front.appendChild(clicks);
 
-                txt = txt.cloneNode(false);
-                txt.nodeValue = '\xA0';
+                content = content.cloneNode(false);
+                content.nodeValue = '\xA0';
 
-                back.appendChild(txt);
+                // back.appendChild(txt);
 
                 flipper.appendChild(back);
                 flipper.appendChild(front);
@@ -129,13 +139,9 @@ var Level = function (evt, rows, cols, matches) {
             };
         },
         prepare             = function () {
-            var i = 0,
-                j = 0;
-
-            for (i = 0; i < (rows * cols) / matches; i = i + 1) {
-                for (j = 0; j < matches; j = j + 1) {
-                    cards.push(new Card(cardsList[i], i));
-                }
+            for (let i = 0; i< (rows * cols)/2; i = i + 1){
+                cards.push(new Card(`assets/images/${animalList[i]}.svg`, i));
+                cards.push(new Card(`assets/videos/${animalList[i]}.mp4`, i));
             }
 
             cards.shuffle();
@@ -146,16 +152,14 @@ var Level = function (evt, rows, cols, matches) {
                 cell        = document.createElement('td'),
                 rowFrag     = document.createDocumentFragment(),
                 cellFrag    = document.createDocumentFragment(),
-                i           = 0,
-                j           = 0,
                 k           = 0;
 
             prepare();
 
-            for (i = 0; i < rows; i = i + 1) {
+            for (let i = 0; i < rows; i = i + 1) {
                 row = row.cloneNode(false);
 
-                for (j = 0; j < cols; j = j + 1) {
+                for (let j = 0; j < cols; j = j + 1) {
                     cell = cell.cloneNode(false);
 
                     cards[k].draw(k, cell);
@@ -268,16 +272,8 @@ var MemoryGame = function (evt) {
         info        = document.getElementById('game-info'),
         lvlCtrls    = document.getElementById('levels'),
         lvls        = [
-            {'rows': 3, 'cols': 4, 'matches': 2},
-            {'rows': 4, 'cols': 4, 'matches': 2},
-            {'rows': 4, 'cols': 5, 'matches': 2},
-            {'rows': 3, 'cols': 4, 'matches': 3},
-            {'rows': 3, 'cols': 5, 'matches': 3},
-            {'rows': 3, 'cols': 6, 'matches': 3},
-            {'rows': 4, 'cols': 4, 'matches': 4},
-            {'rows': 4, 'cols': 5, 'matches': 4},
-            {'rows': 4, 'cols': 6, 'matches': 4},
-            {'rows': 5, 'cols': 6, 'matches': 5}
+            {'rows': 2, 'cols': 2, 'matches': 2},
+            {'rows': 2, 'cols': 3, 'matches': 2}
         ],
         lastBtn     = lvlCtrls.childNodes[1],
         btn         = null,

@@ -224,6 +224,14 @@ p strong {
     color: #2B54BF;
     text-shadow: 1px 1px 1px rgba(255,255,255,1);
 }
+.front img {
+    width: 70px;
+    height: 70px;
+}
+.front video {
+    width: 70px;
+    height: 70px;
+}
 
 .back {
     opacity: 1;
