@@ -3,7 +3,7 @@ MemoryGame.js
 
 This is an implementation of memory to learn animals in DGS (deutsche Gebärdensprache).
 
-Demo is available [here](https://gellardo.github.io/MemoryGame.js/MemoryGame.html).
+Demo is available [here](https://gellardo.github.io/DGSMemory).
 
 MemoryGame.js requires Event.js package, which can be acquired at the following links:
 
