@@ -154,6 +154,7 @@ p strong {
     font-size: 64px;
     line-height: 70px;
     cursor: default;
+    padding: 3px;
 }
 
 .flipper {
