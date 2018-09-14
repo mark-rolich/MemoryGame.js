@@ -63,7 +63,6 @@ p strong {
     display: inline-block;
     padding: 0;
     opacity: 1;
-    margin: 20px 0 0;
     position: relative
 }
 
@@ -137,7 +136,7 @@ p strong {
 .play-field {
     display: flex;
     flex-wrap: wrap;
-    max-width: 650px;
+    max-width: 1000px;
     margin: 20px;
     padding: 0;
     border-collapse: collapse;
@@ -149,8 +148,8 @@ p strong {
 }
 
 .card {
-    width: 80px;
-    height: 80px;
+    width: 115px;
+    height: 115px;
     font-size: 64px;
     line-height: 70px;
     cursor: default;
