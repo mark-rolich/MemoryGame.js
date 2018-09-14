@@ -3,15 +3,12 @@ MemoryGame.js
 
 MemoryGame.js is a Javascript implementation of Memory Game (http://en.wikipedia.org/wiki/Concentration_(game)).
 
-Demo is available at http://mark-rolich.github.com/MemoryGame.js
+Demo is available at http://gellardo.github.com/MemoryGame.js
 
 MemoryGame.js requires Event.js package, which can be acquired at the following links:
 
 * Github - https://github.com/mark-rolich/Event.js
 * JS Classes - http://www.jsclasses.org/package/212-JavaScript-Handle-events-in-a-browser-independent-manner.html
-
-MemoryGame.js uses great [Raphaël Icon-Set](http://raphaeljs.com/icons/) by Dmitry Baranovskiy,
-converted to [Webfont](http://icons.marekventur.de/) by Marek Ventur.
 
 Browser Compatibility
 --------------------
@@ -22,13 +19,6 @@ Currently tested in:
 * Chrome 24
 * Firefox 18
 * Safari 5.1.1
-
-Bug tracker
------------
-
-Have a bug? Please create an issue here on GitHub!
-
-https://github.com/mark-rolich/MemoryGame.js/issues
 
 Copyright and License
 ---------------------
