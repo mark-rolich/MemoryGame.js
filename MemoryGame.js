@@ -77,6 +77,7 @@ var Level = function (evt, rows, cols, matches) {
                     content = document.createElement('video');
                     let source = document.createElement('source');
                     source.src = this.video;
+                    content.muted=true;
                     content.appendChild(source);
                 }
 
