@@ -41,8 +41,7 @@ Array.prototype.in_array = function (value) {
 var Level = function (evt, rows, cols, matches) {
     "use strict";
 
-    var cardsList           = '!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVW[\\]^_`abcdefghijklmnopqrstuvwxyzÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜ',
-        animalList           = ['bird', 'butterfly', 'cat', 'cow', 'crocodile', 'dog', 'donkey', 'elephant', 'frog', 'giraffe', 'goat', 'horse', 'lion', 'monkey', 'mouse', 'rabbit', 'sheep', 'snake', 'spider'],
+    var animalList           = ['bird', 'butterfly', 'cat', 'cow', 'crocodile', 'dog', 'donkey', 'elephant', 'frog', 'giraffe', 'goat', 'horse', 'lion', 'monkey', 'mouse', 'rabbit', 'sheep', 'snake', 'spider'],
         playfieldWrapper    = document.getElementById('playfield-wrapper'),
         playfield           = document.createElement('div'),
         cards               = [],
@@ -79,6 +78,13 @@ var Level = function (evt, rows, cols, matches) {
                     source.src = this.video;
                     content.muted=true;
                     content.preload=true;
+                    content.onclick= () => {
+                        if(content.ended) {
+                            content.pause();
+                            content.currentTime = 0;
+                            content.play();
+                        }
+                    };
                     content.appendChild(source);
                 }
 
@@ -237,7 +243,7 @@ var Level = function (evt, rows, cols, matches) {
             }
         };
 
-    if ((rows * cols) / matches > cardsList.length) {
+    if ((rows * cols) / matches > animalList.length + 2) { // only necessary, because we only have 38 cards :'(
         throw ('There are not enough cards to display the playing field');
     } else if ((rows * cols) % matches !== 0) {
         throw ('Out of bounds');
