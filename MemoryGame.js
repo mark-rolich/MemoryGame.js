@@ -246,8 +246,7 @@ var Level = function (evt, rows, cols, matches) {
     playfieldWrapper.className = '';
     playfield.className = 'play-field';
 
-    cardsList = cardsList.split('');
-    cardsList.shuffle();
+    animalList.shuffle();
 
     this.onwin = function () {};
 
@@ -265,13 +264,13 @@ var MemoryGame = function (evt) {
             {'rows': 5, 'cols': 8, 'matches': 2},
             {'rows': 2, 'cols': 2, 'matches': 2},
             {'rows': 2, 'cols': 3, 'matches': 2},
-            {'rows': 3, 'cols': 3, 'matches': 2},
+            {'rows': 2, 'cols': 4, 'matches': 2},
             {'rows': 3, 'cols': 4, 'matches': 2},
             {'rows': 4, 'cols': 4, 'matches': 2},
             {'rows': 4, 'cols': 5, 'matches': 2},
-            {'rows': 5, 'cols': 5, 'matches': 2},
+            {'rows': 4, 'cols': 6, 'matches': 2},
             {'rows': 5, 'cols': 6, 'matches': 2},
-            {'rows': 5, 'cols': 7, 'matches': 2},
+            {'rows': 6, 'cols': 6, 'matches': 2},
         ],
         lastBtn     = lvlCtrls.childNodes[1],
         btn         = null,
