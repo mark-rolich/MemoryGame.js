@@ -206,9 +206,9 @@ p strong {
 /* Card animation */
 
 .card {
-    perspective: 100;
-    -webkit-perspective: 100;
-    -moz-perspective: 100;
+    perspective: 500;
+    -webkit-perspective: 500;
+    -moz-perspective: 500;
 }
 
 .flipper {
