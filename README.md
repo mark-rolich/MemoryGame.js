@@ -1,9 +1,9 @@
 DGSMemory
 =========
 
-This is an implementation of memory to learn animals in DGS (deutsche Gebärdensprache).
+This is an implementation of memory to learn animals in DGS (Deutsche Gebärdensprache).
 
-Demo is available [here](https://gellardo.github.io/DGSMemory).
+**Start playing [here](https://signtogether.github.io/DGSMemory).**
 
 DGSMemory requires Event.js package, which can be acquired at the following links:
 
@@ -23,7 +23,7 @@ Currently tested in:
 Copyright and License
 ---------------------
 
-Copyright 2012 Mark Rolich & Frank Schmidt
+Copyright 2019 Mark Rolich & Frank Schmidt & Agnes Köhler
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
