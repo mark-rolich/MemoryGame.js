@@ -41,7 +41,7 @@ Array.prototype.in_array = function (value) {
 var Level = function (evt, rows, cols, matches) {
     "use strict";
 
-    var animalList           = ['bird', 'butterfly', 'cat', 'cow', 'crocodile', 'dog', 'donkey', 'elephant', 'frog', 'giraffe', 'goat', 'horse', 'lion', 'monkey', 'mouse', 'rabbit', 'sheep', 'snake', 'spider'],
+    var animalList           = ['bird', 'butterfly', 'cat', 'cow', 'crocodile', 'dog', 'donkey', 'elephant', 'frog', 'giraffe', 'goat', 'horse', 'lion', 'monkey', 'mouse', 'pig', 'rabbit', 'sheep', 'snake', 'spider'],
         playfieldWrapper    = document.getElementById('playfield-wrapper'),
         playfield           = document.createElement('div'),
         cards               = [],
@@ -150,7 +150,7 @@ var Level = function (evt, rows, cols, matches) {
         },
         prepare             = function () {
             for (let i = 0; i< (rows * cols)/matches; i = i + 1){
-                cards.push(new Card(`assets/images/${animalList[i]}.svg`,null, i));
+                cards.push(new Card(`assets/images/${animalList[i]}.png`,null, i));
                 cards.push(new Card(null, `assets/videos/${animalList[i]}.mp4`, i));
             }
 

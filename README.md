@@ -41,22 +41,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 Images
 ------
-- Bird by Agne Alesiute from the Noun Project
-- Butterfly by Elisabeta from the Noun Project
-- Cat by Hea Poh Lin from the Noun Project
-- Cow by Alessandro Suraci from the Noun Project
-- Crocodile by m. turan ercan from the Noun Project
-- Dog by Daniel Schroeder from the Noun Project
-- Donkey by giulia from the Noun Project
-- Elephant by Tatiana Belkina from the Noun Project
-- Frog by Marco Livolsi from the Noun Project
-- Giraffe by Maëlle Chassard from the Noun Project
-- Goat by Alena Artemova from the Noun Project
-- Horse by Orin zuu from the Noun Project
-- Lion by Iconic from the Noun Project
-- Gorilla by Iconic from the Noun Project
-- Mouse by zidney from the Noun Project
-- Rabbit by David from the Noun Project
-- Sheep by Alena Artemova from the Noun Project
-- Snake by Andrew Doane from the Noun Project
-- Spider by AdbA Icons ❤️ from the Noun Project
+drawn by Hengrui Jiang & Agnes Köhler
