@@ -86,6 +86,10 @@ var Level = function (evt, size, matches, category, list) {
                     };
                     content.appendChild(source);
                 }
+                var tmp = document.createElement('div')
+                tmp.appendChild(document.createTextNode("test"))
+                tmp.appendChild(content)
+                content = tmp
 
                 front = card.cloneNode(false);
                 back = card.cloneNode(false);
@@ -290,7 +294,7 @@ class MemoryGame {
                 ' Das entspricht einer Effizienz von <strong>' + prc + '%</strong>';
         }.bind(this);
 
-        this.info.innerHTML = 'Klicke die Karten an, um <strong>' + matches + '</strong> Paare aufzudecken.';
+        this.info.innerHTML = 'Klicke die Karten an, um <strong>' + matches + 'er</strong> Paare aufzudecken.';
     }
 
     updateSize(newSize, element) {
