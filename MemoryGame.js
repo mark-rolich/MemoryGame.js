@@ -38,11 +38,10 @@ Array.prototype.in_array = function (value) {
     return result;
 };
 
-var Level = function (evt, rows, cols, matches) {
+var Level = function (evt, rows, cols, matches, list) {
     "use strict";
 
-    var animalList           = ['bird', 'butterfly', 'cat', 'cow', 'crocodile', 'dog', 'donkey', 'elephant', 'frog', 'giraffe', 'goat', 'horse', 'lion', 'monkey', 'mouse', 'pig', 'rabbit', 'sheep', 'snake', 'spider'],
-        playfieldWrapper    = document.getElementById('playfield-wrapper'),
+    var playfieldWrapper    = document.getElementById('playfield-wrapper'),
         playfield           = document.createElement('div'),
         cards               = [],
         mouseHndl           = null,
@@ -150,8 +149,8 @@ var Level = function (evt, rows, cols, matches) {
         },
         prepare             = function () {
             for (let i = 0; i< (rows * cols)/matches; i = i + 1){
-                cards.push(new Card(`assets/images/${animalList[i]}.png`,null, i));
-                cards.push(new Card(null, `assets/videos/${animalList[i]}.mp4`, i));
+                cards.push(new Card(`assets/images/${list[i]}.png`,null, i));
+                cards.push(new Card(null, `assets/videos/${list[i]}.mp4`, i));
             }
 
             cards.shuffle();
@@ -243,7 +242,7 @@ var Level = function (evt, rows, cols, matches) {
             }
         };
 
-    if ((rows * cols) / matches > animalList.length + 2) { // only necessary, because we only have 38 cards :'(
+    if ((rows * cols) / matches > list.length + 2) { // only necessary, because we only have 38 cards :'(
         throw ('There are not enough cards to display the playing field');
     } else if ((rows * cols) % matches !== 0) {
         throw ('Out of bounds');
@@ -252,7 +251,7 @@ var Level = function (evt, rows, cols, matches) {
     playfieldWrapper.className = '';
     playfield.className = 'play-field';
 
-    animalList.shuffle();
+    list.shuffle();
 
     this.onwin = function () {};
 
@@ -261,34 +260,38 @@ var Level = function (evt, rows, cols, matches) {
     mouseHndl = evt.attach('mousedown', playfield, play);
 };
 
+// Possible lists
+var animalList = ['bird', 'butterfly', 'cat', 'cow', 'crocodile', 'dog', 'donkey', 'elephant', 'frog', 'giraffe', 'goat', 'horse', 'lion', 'monkey', 'mouse', 'pig', 'rabbit', 'sheep', 'snake', 'spider'];
+
 var MemoryGame = function (evt) {
     "use strict";
     var lvlNum      = 0,
         info        = document.getElementById('game-info'),
         lvlCtrls    = document.getElementById('levels'),
         lvls        = [
-            {'rows': 5, 'cols': 8, 'matches': 2},
-            {'rows': 2, 'cols': 2, 'matches': 2},
-            {'rows': 2, 'cols': 3, 'matches': 2},
-            {'rows': 2, 'cols': 4, 'matches': 2},
-            {'rows': 3, 'cols': 4, 'matches': 2},
-            {'rows': 4, 'cols': 4, 'matches': 2},
-            {'rows': 4, 'cols': 5, 'matches': 2},
-            {'rows': 4, 'cols': 6, 'matches': 2},
-            {'rows': 5, 'cols': 6, 'matches': 2},
-            {'rows': 6, 'cols': 6, 'matches': 2},
+            {'rows': 5, 'cols': 8, 'matches': 2, 'list': animalList},
+            {'rows': 2, 'cols': 2, 'matches': 2, 'list': animalList},
+            {'rows': 2, 'cols': 3, 'matches': 2, 'list': animalList},
+            {'rows': 2, 'cols': 4, 'matches': 2, 'list': animalList},
+            {'rows': 3, 'cols': 4, 'matches': 2, 'list': animalList},
+            {'rows': 4, 'cols': 4, 'matches': 2, 'list': animalList},
+            {'rows': 4, 'cols': 5, 'matches': 2, 'list': animalList},
+            {'rows': 4, 'cols': 6, 'matches': 2, 'list': animalList},
+            {'rows': 5, 'cols': 6, 'matches': 2, 'list': animalList},
+            {'rows': 6, 'cols': 6, 'matches': 2, 'list': animalList},
         ],
         lastBtn     = lvlCtrls.childNodes[1],
         btn         = null,
         lvl         = lvls[lvlNum],
         currentLvl  = null,
         start       = function () {
-            currentLvl = new Level(evt, lvl.rows, lvl.cols, lvl.matches);
+            currentLvl = new Level(evt, lvl.rows, lvl.cols, lvl.matches, lvl.list);
             currentLvl.onwin = function (clicks, prc) {
-                info.innerHTML = 'You\'ve found all matches in <strong>' + clicks + '</strong> clicks with <strong>' + prc + '%</strong> efficiency';
+                info.innerHTML = 'Du hast alle Paare mit nur <strong>' + clicks + '</strong> Klicks gefunden.' +
+                    ' Das entspricht einer Effizienz von <strong>' + prc + '%</strong>';
             };
 
-            info.innerHTML = 'Click the cards to reveal <strong>' + lvl.matches + '</strong> matches';
+            info.innerHTML = 'Klicke die Karten an, um <strong>' + lvl.matches + '</strong> Paare aufzudecken.';
         };
 
     start();
