@@ -1,25 +1,25 @@
 /**
-* Javascript implementation of "Memory Game"
-* (http://en.wikipedia.org/wiki/Concentration_(game))
-*
-* Uses css3 transitions and transfomations so works in the modern browsers.
-* Currently tested in:
-*
-* Chrome 24
-* Firefox 18
-* Safari 5.1.1
-*
-* MemoryGame.js requires Event.js package, which can be acquired at the following links:
-* Github - https://github.com/mark-rolich/Event.js
-* JS Classes - http://www.jsclasses.org/package/212-JavaScript-Handle-events-in-a-browser-independent-manner.html
-*
-* @author Mark Rolich <mark.rolich@gmail.com>
-*/
+ * Javascript implementation of "Memory Game"
+ * (http://en.wikipedia.org/wiki/Concentration_(game))
+ *
+ * Uses css3 transitions and transfomations so works in the modern browsers.
+ * Currently tested in:
+ *
+ * Chrome 24
+ * Firefox 18
+ * Safari 5.1.1
+ *
+ * MemoryGame.js requires Event.js package, which can be acquired at the following links:
+ * Github - https://github.com/mark-rolich/Event.js
+ * JS Classes - http://www.jsclasses.org/package/212-JavaScript-Handle-events-in-a-browser-independent-manner.html
+ *
+ * @author Mark Rolich <mark.rolich@gmail.com>
+ */
 Array.prototype.shuffle = function () {
     var temp, j, i;
 
-    for (temp, j, i = this.length; i; ) {
-        j = parseInt(Math.random () * i);
+    for (temp, j, i = this.length; i;) {
+        j = parseInt(Math.random() * i);
         temp = this[--i];
         this[i] = this[j];
         this[j] = temp;
@@ -38,47 +38,47 @@ Array.prototype.in_array = function (value) {
     return result;
 };
 
-var Level = function (evt, rows, cols, matches, list) {
+var Level = function (evt, size, matches, list) {
     "use strict";
 
-    var playfieldWrapper    = document.getElementById('playfield-wrapper'),
-        playfield           = document.createElement('div'),
-        cards               = [],
-        mouseHndl           = null,
-        self                = this,
-        clicksCnt           = 0,
-        matchCount          = 0,
-        openCards           = [],
-        Card                = function (image, video, pair) {
-            this.state      = 0;
-            this.freezed    = 0;
-            this.image      = image;
-            this.video      = video;
-            this.pair       = pair;
-            this.clicksCnt  = 0;
+    var playfieldWrapper = document.getElementById('playfield-wrapper'),
+        playfield = document.createElement('div'),
+        cards = [],
+        mouseHndl = null,
+        self = this,
+        clicksCnt = 0,
+        matchCount = 0,
+        openCards = [],
+        Card = function (image, video, pair) {
+            this.state = 0;
+            this.freezed = 0;
+            this.image = image;
+            this.video = video;
+            this.pair = pair;
+            this.clicksCnt = 0;
             this.content = null;
 
             var flipper = null,
-                front   = null,
-                back    = null,
-                clicks  = null;
+                front = null,
+                back = null,
+                clicks = null;
 
             this.draw = function (idx, container) {
-                var card    = document.createElement('div'),
+                var card = document.createElement('div'),
                     content = null;
 
                 flipper = card.cloneNode(false);
-                if (this.image != null){
+                if (this.image != null) {
                     content = document.createElement('img');
                     content.src = this.image;
-                } else if (this.video != null){
+                } else if (this.video != null) {
                     content = document.createElement('video');
                     let source = document.createElement('source');
                     source.src = this.video;
-                    content.muted=true;
-                    content.preload=true;
-                    content.onclick= () => {
-                        if(content.ended) {
+                    content.muted = true;
+                    content.preload = true;
+                    content.onclick = () => {
+                        if (content.ended) {
                             content.pause();
                             content.currentTime = 0;
                             content.play();
@@ -87,9 +87,9 @@ var Level = function (evt, rows, cols, matches, list) {
                     content.appendChild(source);
                 }
 
-                front   = card.cloneNode(false);
-                back    = card.cloneNode(false);
-                clicks  = card.cloneNode(false);
+                front = card.cloneNode(false);
+                back = card.cloneNode(false);
+                clicks = card.cloneNode(false);
 
                 card.className = 'card';
                 flipper.className = 'flipper';
@@ -147,29 +147,29 @@ var Level = function (evt, rows, cols, matches, list) {
                 pulseTimer = null;
             };
         },
-        prepare             = function () {
-            for (let i = 0; i< (rows * cols)/matches; i = i + 1){
-                cards.push(new Card(`assets/images/${list[i]}.png`,null, i));
+        prepare = function () {
+            for (let i = 0; i < (size) / matches; i = i + 1) {
+                cards.push(new Card(`assets/images/${list[i]}.png`, null, i));
                 cards.push(new Card(null, `assets/videos/${list[i]}.mp4`, i));
             }
 
             cards.shuffle();
         },
-        draw                = function () {
-            let k           = 0;
+        draw = function () {
+            let k = 0;
             prepare();
 
-            for (let i = 0; i< (rows*cols); i= i+1) {
+            for (let i = 0; i < (size); i = i + 1) {
                 cards[i].draw(k, playfield);
                 k++;
             }
             playfieldWrapper.replaceChild(playfield, playfieldWrapper.childNodes[0]);
         },
-        play                = function (e, src) {
-            var isFace      = (src.className.indexOf('face') !== -1),
-                isFlipper   = (src.className === 'flipper'),
-                card        = null,
-                i           = 0,
+        play = function (e, src) {
+            var isFace = (src.className.indexOf('face') !== -1),
+                isFlipper = (src.className === 'flipper'),
+                card = null,
+                i = 0,
                 backFlipTimer = null;
 
             if (isFace || isFlipper) {
@@ -183,7 +183,7 @@ var Level = function (evt, rows, cols, matches, list) {
                     return;
                 }
 
-                if (card.video != null){
+                if (card.video != null) {
                     card.content.currentTime = 1;
                     card.content.play();
                 }
@@ -209,7 +209,7 @@ var Level = function (evt, rows, cols, matches, list) {
                     } else {
                         evt.detach('mousedown', playfield, mouseHndl);
 
-                        let cardMultiplier = card.video!=null?4:1;
+                        let cardMultiplier = card.video != null ? 4 : 1;
                         backFlipTimer = window.setTimeout(function () {
                             card.flip(1);
 
@@ -229,12 +229,12 @@ var Level = function (evt, rows, cols, matches, list) {
                     card.flip(0);
                 }
 
-                if (matchCount === (rows * cols) / matches) {
+                if (matchCount === (size) / matches) {
                     playfieldWrapper.className = 'win';
 
                     window.setTimeout(function () {
                         playfield.className = 'play-field win';
-                        self.onwin(clicksCnt, Math.round(((rows * cols) * 100) / clicksCnt));
+                        self.onwin(clicksCnt, Math.round(((size) * 100) / clicksCnt));
                         playfieldWrapper.className = '';
                     }, 1500);
 
@@ -242,9 +242,9 @@ var Level = function (evt, rows, cols, matches, list) {
             }
         };
 
-    if ((rows * cols) / matches > list.length + 2) { // only necessary, because we only have 38 cards :'(
+    if ((size) / matches > list.length + 2) { // only necessary, because we only have 38 cards :'(
         throw ('There are not enough cards to display the playing field');
-    } else if ((rows * cols) % matches !== 0) {
+    } else if ((size) % matches !== 0) {
         throw ('Out of bounds');
     }
 
@@ -253,7 +253,8 @@ var Level = function (evt, rows, cols, matches, list) {
 
     list.shuffle();
 
-    this.onwin = function () {};
+    this.onwin = function () {
+    };
 
     draw();
 
@@ -263,12 +264,14 @@ var Level = function (evt, rows, cols, matches, list) {
 // Possible lists
 var animalList = ['bird', 'butterfly', 'cat', 'cow', 'crocodile', 'dog', 'donkey', 'elephant', 'frog', 'giraffe', 'goat', 'horse', 'lion', 'monkey', 'mouse', 'pig', 'rabbit', 'sheep', 'snake', 'spider'];
 
-var MemoryGame = function (evt) {
-    "use strict";
-    var lvlNum      = 0,
-        info        = document.getElementById('game-info'),
-        lvlCtrls    = document.getElementById('levels'),
-        lvls        = [
+
+class MemoryGame {
+    constructor(evt) {
+        this.evt = evt
+        this.lvlNum = 0
+        this.info = document.getElementById('game-info')
+        this.lvlCtrls = document.getElementById('levels')
+        this.lvls = [
             {'rows': 5, 'cols': 8, 'matches': 2, 'list': animalList},
             {'rows': 2, 'cols': 2, 'matches': 2, 'list': animalList},
             {'rows': 2, 'cols': 3, 'matches': 2, 'list': animalList},
@@ -280,34 +283,33 @@ var MemoryGame = function (evt) {
             {'rows': 5, 'cols': 6, 'matches': 2, 'list': animalList},
             {'rows': 6, 'cols': 6, 'matches': 2, 'list': animalList},
         ],
-        lastBtn     = lvlCtrls.childNodes[1],
-        btn         = null,
-        lvl         = lvls[lvlNum],
-        currentLvl  = null,
-        start       = function () {
-            currentLvl = new Level(evt, lvl.rows, lvl.cols, lvl.matches, lvl.list);
-            currentLvl.onwin = function (clicks, prc) {
-                info.innerHTML = 'Du hast alle Paare mit nur <strong>' + clicks + '</strong> Klicks gefunden.' +
-                    ' Das entspricht einer Effizienz von <strong>' + prc + '%</strong>';
-            };
+            this.lastBtn = this.lvlCtrls.childNodes[1]
+        this.btn = null
+        this.lvl = this.lvls[this.lvlNum]
+        this.currentLvl = null
+        this.levelCategory = 'animal'
+        this.levelSize = 20
 
-            info.innerHTML = 'Klicke die Karten an, um <strong>' + lvl.matches + '</strong> Paare aufzudecken.';
-        };
+        this.start();
+    }
 
-    start();
+    start() {
+        this.currentLvl = new Level(evt, this.levelSize, this.lvl.matches, this.lvl.list);
+        this.currentLvl.onwin = function (clicks, prc) {
+            this.info.innerHTML = 'Du hast alle Paare mit nur <strong>' + clicks + '</strong> Klicks gefunden.' +
+                ' Das entspricht einer Effizienz von <strong>' + prc + '%</strong>';
+        }.bind(this);
 
-    evt.attach('mousedown', lvlCtrls, function (e, src) {
-        if (src.tagName === 'A') {
-            btn = src.parentNode;
+        this.info.innerHTML = 'Klicke die Karten an, um <strong>' + this.lvl.matches + '</strong> Paare aufzudecken.';
+    }
 
-            lastBtn.className = '';
-            btn.className = 'selected';
+    updateSize(newSize) {
+        this.levelSize = newSize;
+        this.start()
+    }
 
-            lastBtn = btn;
-
-            lvlNum = src.getAttribute('level');
-            lvl = lvls[lvlNum];
-            start();
-        }
-    });
+    updateCategory(newCategory) {
+        this.levelCategory = newCategory;
+        this.start()
+    };
 };
