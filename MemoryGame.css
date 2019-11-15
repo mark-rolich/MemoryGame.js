@@ -107,6 +107,12 @@ p strong {
     color: #fff;
 }
 
+#categories li.selected a {
+    border-top: solid 1px #6B88D2;
+    background-color: #2B54BF
+}
+
+
 #addCategories {
     width: 25px;
     height: 25px;

@@ -242,7 +242,7 @@ var Level = function (evt, size, matches, category, list) {
             }
         };
 
-    if ((size) / matches > list.length + 2) { // only necessary, because we only have 38 cards :'(
+    if ((size) / matches > list.length) { // only necessary, because we only have 38 cards :'(
         throw ('There are not enough cards to display the playing field');
     } else if ((size) % matches !== 0) {
         throw ('Out of bounds');
@@ -273,9 +273,8 @@ class MemoryGame {
         this.evt = evt
         this.lvlNum = 0
         this.info = document.getElementById('game-info')
-        this.lvlCtrls = document.getElementById('levels')
-        this.lastBtn = this.lvlCtrls.childNodes[1]
-        this.btn = null
+        this.levelCtrls = document.getElementById('levels')
+        this.categoryCtrls = document.getElementById('categories')
         this.currentLvl = null
         this.levelCategory = 'animals'
         this.levelSize = 20
@@ -294,12 +293,20 @@ class MemoryGame {
         this.info.innerHTML = 'Klicke die Karten an, um <strong>' + matches + '</strong> Paare aufzudecken.';
     }
 
-    updateSize(newSize) {
+    updateSize(newSize, element) {
+        for (let i = 0; i < this.levelCtrls.children.length; i++) {
+            this.levelCtrls.children[i].className = ''
+        }
+        element.parentElement.className = 'selected'
         this.levelSize = newSize;
         this.start()
     }
 
-    updateCategory(newCategory) {
+    updateCategory(newCategory, element) {
+        for (let i = 0; i < this.categoryCtrls.children.length; i++) {
+            this.categoryCtrls.children[i].className = ''
+        }
+        element.parentElement.className = 'selected'
         this.levelCategory = newCategory;
         this.start()
     };
