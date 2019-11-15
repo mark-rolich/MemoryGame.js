@@ -77,6 +77,36 @@ p strong {
     width: 100%
 }
 
+#categories {
+    display: block;
+    width: 360px;
+    margin: 20px auto 0;
+    list-style: none;
+    padding: 0;
+    overflow: hidden
+}
+#categories li {
+    float: left;
+    width: auto;
+    border-radius: 3px;
+    border: solid 1px #DC930B;
+    margin: 5px 10px 5px 0;
+}
+
+#categories li a {
+    text-decoration: none;
+    display: inline-block;
+    border-top: solid 1px #FFC04D;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    background-color: orange;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 25px;
+    text-align: center;
+    color: #fff;
+}
+
 #levels {
     display: block;
     width: 360px;
