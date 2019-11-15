@@ -262,7 +262,10 @@ var Level = function (evt, size, matches, list) {
 };
 
 // Possible lists
-var animalList = ['bird', 'butterfly', 'cat', 'cow', 'crocodile', 'dog', 'donkey', 'elephant', 'frog', 'giraffe', 'goat', 'horse', 'lion', 'monkey', 'mouse', 'pig', 'rabbit', 'sheep', 'snake', 'spider'];
+var lists = {
+    'animals': ['bird', 'butterfly', 'cat', 'cow', 'crocodile', 'dog', 'donkey', 'elephant', 'frog', 'giraffe', 'goat', 'horse', 'lion', 'monkey', 'mouse', 'pig', 'rabbit', 'sheep', 'snake', 'spider'],
+    'it': ['bird', 'butterfly']
+};
 
 
 class MemoryGame {
@@ -271,36 +274,24 @@ class MemoryGame {
         this.lvlNum = 0
         this.info = document.getElementById('game-info')
         this.lvlCtrls = document.getElementById('levels')
-        this.lvls = [
-            {'rows': 5, 'cols': 8, 'matches': 2, 'list': animalList},
-            {'rows': 2, 'cols': 2, 'matches': 2, 'list': animalList},
-            {'rows': 2, 'cols': 3, 'matches': 2, 'list': animalList},
-            {'rows': 2, 'cols': 4, 'matches': 2, 'list': animalList},
-            {'rows': 3, 'cols': 4, 'matches': 2, 'list': animalList},
-            {'rows': 4, 'cols': 4, 'matches': 2, 'list': animalList},
-            {'rows': 4, 'cols': 5, 'matches': 2, 'list': animalList},
-            {'rows': 4, 'cols': 6, 'matches': 2, 'list': animalList},
-            {'rows': 5, 'cols': 6, 'matches': 2, 'list': animalList},
-            {'rows': 6, 'cols': 6, 'matches': 2, 'list': animalList},
-        ],
-            this.lastBtn = this.lvlCtrls.childNodes[1]
+        this.lastBtn = this.lvlCtrls.childNodes[1]
         this.btn = null
-        this.lvl = this.lvls[this.lvlNum]
         this.currentLvl = null
-        this.levelCategory = 'animal'
+        this.levelCategory = 'animals'
         this.levelSize = 20
 
         this.start();
     }
 
     start() {
-        this.currentLvl = new Level(evt, this.levelSize, this.lvl.matches, this.lvl.list);
+        var matches = 2
+        this.currentLvl = new Level(evt, this.levelSize, matches, lists[this.levelCategory]);
         this.currentLvl.onwin = function (clicks, prc) {
             this.info.innerHTML = 'Du hast alle Paare mit nur <strong>' + clicks + '</strong> Klicks gefunden.' +
                 ' Das entspricht einer Effizienz von <strong>' + prc + '%</strong>';
         }.bind(this);
 
-        this.info.innerHTML = 'Klicke die Karten an, um <strong>' + this.lvl.matches + '</strong> Paare aufzudecken.';
+        this.info.innerHTML = 'Klicke die Karten an, um <strong>' + matches + '</strong> Paare aufzudecken.';
     }
 
     updateSize(newSize) {
