@@ -38,7 +38,7 @@ Array.prototype.in_array = function (value) {
     return result;
 };
 
-var Level = function (evt, size, matches, list) {
+var Level = function (evt, size, matches, category, list) {
     "use strict";
 
     var playfieldWrapper = document.getElementById('playfield-wrapper'),
@@ -149,8 +149,8 @@ var Level = function (evt, size, matches, list) {
         },
         prepare = function () {
             for (let i = 0; i < (size) / matches; i = i + 1) {
-                cards.push(new Card(`assets/images/${list[i]}.png`, null, i));
-                cards.push(new Card(null, `assets/videos/${list[i]}.mp4`, i));
+                cards.push(new Card(`assets/${category}/images/${list[i]}.png`, null, i));
+                cards.push(new Card(null, `assets/${category}/videos/${list[i]}.mp4`, i));
             }
 
             cards.shuffle();
@@ -285,7 +285,7 @@ class MemoryGame {
 
     start() {
         var matches = 2
-        this.currentLvl = new Level(evt, this.levelSize, matches, lists[this.levelCategory]);
+        this.currentLvl = new Level(evt, this.levelSize, matches, this.levelCategory, lists[this.levelCategory]);
         this.currentLvl.onwin = function (clicks, prc) {
             this.info.innerHTML = 'Du hast alle Paare mit nur <strong>' + clicks + '</strong> Klicks gefunden.' +
                 ' Das entspricht einer Effizienz von <strong>' + prc + '%</strong>';
