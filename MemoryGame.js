@@ -86,10 +86,6 @@ var Level = function (evt, size, matches, category, list) {
                     };
                     content.appendChild(source);
                 }
-                var tmp = document.createElement('div')
-                tmp.appendChild(document.createTextNode("test"))
-                tmp.appendChild(content)
-                content = tmp
 
                 front = card.cloneNode(false);
                 back = card.cloneNode(false);
