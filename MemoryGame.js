@@ -277,7 +277,7 @@ class MemoryGame {
         this.categoryCtrls = document.getElementById('categories')
         this.currentLvl = null
         this.levelCategory = 'animals'
-        this.levelSize = 20
+        this.levelSize = 40
 
         this.start();
     }
