@@ -20,24 +20,11 @@ Currently tested in:
 * Firefox 18
 * Safari 5.1.1
 
-Copyright and License
----------------------
+Licensing
+---------
 
-Copyright 2019 Mark Rolich & Frank Schmidt & Agnes Köhler
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+Source code is licensed under [GPLv3](license.txt) like the upstream project.
+Media files are licensed under [CC BY-NC-SA](license-media.txt).
 
 Images
 ------
