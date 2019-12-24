@@ -149,8 +149,8 @@ var Level = function (evt, size, matches, category, list) {
         },
         prepare = function () {
             for (let i = 0; i < (size) / matches; i = i + 1) {
-                cards.push(new Card(`assets/${category}/images/${list[i]}.png`, null, i));
-                cards.push(new Card(null, `assets/${category}/videos/${list[i]}.mp4`, i));
+                cards.push(new Card(`assets/${category}/images/${list[i].image}`, null, i));
+                cards.push(new Card(null, `assets/${category}/videos/${list[i].video}`, i));
             }
 
             cards.shuffle();
@@ -263,8 +263,32 @@ var Level = function (evt, size, matches, category, list) {
 
 // Possible lists
 var lists = {
-    'animals': ['bird', 'butterfly', 'cat', 'cow', 'crocodile', 'dog', 'donkey', 'elephant', 'frog', 'giraffe', 'goat', 'horse', 'lion', 'monkey', 'mouse', 'pig', 'rabbit', 'sheep', 'snake', 'spider'],
-    'it': ['bird', 'butterfly']
+    'animals': [
+        {'image': 'bird.png', 'video': 'bird.mp4'},
+        {'image': 'butterfly.png', 'video': 'butterfly.mp4'},
+        {'image': 'cat.png', 'video': 'cat.mp4'},
+        {'image': 'cow.png', 'video': 'cow.mp4'},
+        {'image': 'crocodile.png', 'video': 'crocodile.mp4'},
+        {'image': 'dog.png', 'video': 'dog.mp4'},
+        {'image': 'donkey.png', 'video': 'donkey.mp4'},
+        {'image': 'elephant.png', 'video': 'elephant.mp4'},
+        {'image': 'frog.png', 'video': 'frog.mp4'},
+        {'image': 'giraffe.png', 'video': 'giraffe.mp4'},
+        {'image': 'goat.png', 'video': 'goat.mp4'},
+        {'image': 'horse.png', 'video': 'horse.mp4'},
+        {'image': 'lion.png', 'video': 'lion.mp4'},
+        {'image': 'monkey.png', 'video': 'monkey.mp4'},
+        {'image': 'mouse.png', 'video': 'mouse.mp4'},
+        {'image': 'pig.png', 'video': 'pig.mp4'},
+        {'image': 'rabbit.png', 'video': 'rabbit.mp4'},
+        {'image': 'sheep.png', 'video': 'sheep.mp4'},
+        {'image': 'snake.png', 'video': 'snake.mp4'},
+        {'image': 'spider.png', 'video': 'spider.mp4'}
+    ],
+    'it': [
+        {'image': 'bird.png', 'video': 'bird.mp4'},
+        {'image': 'butterfly.png', 'video': 'butterfly.mp4'}
+    ]
 };
 
 
