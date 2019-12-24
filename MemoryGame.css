@@ -223,6 +223,10 @@ p strong {
     color: #2B54BF;
     text-shadow: 1px 1px 1px rgba(255,255,255,1);
 }
+.front .cardText {
+    color: black;
+    font-size: 15px;
+}
 .front img {
     width: 100%;
     height: 100%;

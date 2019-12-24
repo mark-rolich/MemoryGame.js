@@ -49,10 +49,11 @@ var Level = function (evt, size, matches, category, list) {
         clicksCnt = 0,
         matchCount = 0,
         openCards = [],
-        Card = function (image, video, pair) {
+        Card = function (image, text, video, pair) {
             this.state = 0;
             this.freezed = 0;
             this.image = image;
+            this.text = text;
             this.video = video;
             this.pair = pair;
             this.clicksCnt = 0;
@@ -85,6 +86,10 @@ var Level = function (evt, size, matches, category, list) {
                         }
                     };
                     content.appendChild(source);
+                } else if (this.text != null) {
+                    content = document.createElement('div');
+                    content.innerHTML = this.text;
+                    content.className = 'cardText';
                 }
 
                 front = card.cloneNode(false);
@@ -149,8 +154,12 @@ var Level = function (evt, size, matches, category, list) {
         },
         prepare = function () {
             for (let i = 0; i < (size) / matches; i = i + 1) {
-                cards.push(new Card(`assets/${category}/images/${list[i].image}`, null, i));
-                cards.push(new Card(null, `assets/${category}/videos/${list[i].video}`, i));
+                list[i].image
+                    ? cards.push(new Card(`assets/${category}/images/${list[i].image}`, null, null, i))
+                    : cards.push(new Card(null, `${list[i].text}`, null, i));
+                list[i].video
+                    ? cards.push(new Card(null, null, `assets/${category}/videos/${list[i].video}`, i))
+                    : cards.push(new Card(null, `${list[i].text}`, null, i));
             }
 
             cards.shuffle();
@@ -279,15 +288,15 @@ var lists = {
         {'image': 'lion.png', 'video': 'lion.mp4'},
         {'image': 'monkey.png', 'video': 'monkey.mp4'},
         {'image': 'mouse.png', 'video': 'mouse.mp4'},
-        {'image': 'pig.png', 'video': 'pig.mp4'},
+        {'image': 'pig.png', 'text': 'Schwein'},
         {'image': 'rabbit.png', 'video': 'rabbit.mp4'},
         {'image': 'sheep.png', 'video': 'sheep.mp4'},
         {'image': 'snake.png', 'video': 'snake.mp4'},
         {'image': 'spider.png', 'video': 'spider.mp4'}
     ],
     'it': [
-        {'image': 'bird.png', 'video': 'bird.mp4'},
-        {'image': 'butterfly.png', 'video': 'butterfly.mp4'}
+        {'text': 'Javascript'},
+        {'text': 'Scala'}
     ]
 };
 
