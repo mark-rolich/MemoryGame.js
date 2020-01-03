@@ -272,7 +272,7 @@ var Level = function (evt, size, matches, category, list) {
 
 // Possible lists
 var lists = {
-    'animals': [
+    'Tiere': [
         {'image': 'bird.png', 'video': 'bird.mp4'},
         {'image': 'butterfly.png', 'video': 'butterfly.mp4'},
         {'image': 'cat.png', 'video': 'cat.mp4'},
@@ -294,7 +294,7 @@ var lists = {
         {'image': 'snake.png', 'video': 'snake.mp4'},
         {'image': 'spider.png', 'video': 'spider.mp4'}
     ],
-    'it': [
+    'IT': [
         {'text': 'Javascript'},
         {'text': 'Scala'}
     ]
@@ -309,8 +309,9 @@ class MemoryGame {
         this.levelCtrls = document.getElementById('levels')
         this.categoryCtrls = document.getElementById('categories')
         this.currentLvl = null
-        this.levelCategory = 'animals'
-        this.levelSize = 40
+        this.levelSize = 2; // minimum number of cards
+        this.updateCategory(this.categoryCtrls.childNodes[1].firstChild);
+        this.updateSize(this.levelCtrls.childNodes[1].firstChild);
 
         this.start();
     }
@@ -326,21 +327,27 @@ class MemoryGame {
         this.info.innerHTML = 'Klicke die Karten an, um <strong>' + matches + 'er</strong> Paare aufzudecken.';
     }
 
-    updateSize(newSize, element) {
+    updateSize(element, pairs) {
         for (let i = 0; i < this.levelCtrls.children.length; i++) {
             this.levelCtrls.children[i].className = ''
         }
         element.parentElement.className = 'selected'
-        this.levelSize = newSize;
+        if (pairs)
+            this.levelSize = pairs * 2;
+        else
+            this.levelSize = element.textContent * 2;
         this.start()
     }
 
-    updateCategory(newCategory, element) {
+    updateCategory(element, newCategory) {
         for (let i = 0; i < this.categoryCtrls.children.length; i++) {
             this.categoryCtrls.children[i].className = ''
         }
-        element.parentElement.className = 'selected'
-        this.levelCategory = newCategory;
+        element.parentElement.className = 'selected';
+        if (newCategory)
+            this.levelCategory = newCategory;
+        else
+            this.levelCategory = element.textContent;
         this.start()
     };
-};
+}
