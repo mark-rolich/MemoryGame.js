@@ -49,117 +49,14 @@ var Level = function (evt, size, matches, category, list) {
         clicksCnt = 0,
         matchCount = 0,
         openCards = [],
-        Card = function (image, text, video, pair) {
-            this.state = 0;
-            this.freezed = 0;
-            this.image = image;
-            this.text = text;
-            this.video = video;
-            this.pair = pair;
-            this.clicksCnt = 0;
-            this.content = null;
-
-            var flipper = null,
-                front = null,
-                back = null,
-                clicks = null;
-
-            this.draw = function (idx, container) {
-                var card = document.createElement('div'),
-                    content = null;
-
-                flipper = card.cloneNode(false);
-                if (this.image != null) {
-                    content = document.createElement('img');
-                    content.src = this.image;
-                } else if (this.video != null) {
-                    content = document.createElement('video');
-                    let source = document.createElement('source');
-                    source.src = this.video;
-                    content.muted = true;
-                    content.preload = true;
-                    content.onclick = () => {
-                        if (content.ended) {
-                            content.pause();
-                            content.currentTime = 0;
-                            content.play();
-                        }
-                    };
-                    content.appendChild(source);
-                } else if (this.text != null) {
-                    content = document.createElement('div');
-                    content.innerHTML = this.text;
-                    content.className = 'cardText';
-                }
-
-                front = card.cloneNode(false);
-                back = card.cloneNode(false);
-                clicks = card.cloneNode(false);
-
-                card.className = 'card';
-                flipper.className = 'flipper';
-                front.className = 'front face icon';
-                back.className = 'back face';
-                clicks.className = 'clicks';
-                clicks.appendChild(document.createTextNode('\xA0'));
-
-                front.appendChild(content);
-                front.appendChild(clicks);
-
-                this.content = content;
-                // content = content.cloneNode(false);
-                // content.nodeValue = '\xA0';
-                // back.appendChild(txt);
-
-                flipper.appendChild(back);
-                flipper.appendChild(front);
-
-                flipper.setAttribute('idx', idx);
-
-                card.appendChild(flipper);
-                container.appendChild(card);
-            };
-
-            this.flip = function (state) {
-                if (state === 0) {
-                    flipper.className = 'flipper flipfront';
-                    front.style.opacity = 1;
-                    back.style.opacity = 0;
-
-                    this.state = 1;
-                    this.clicksCnt = this.clicksCnt + 1;
-
-                    clicks.childNodes[0].nodeValue = this.clicksCnt;
-
-                    clicksCnt = clicksCnt + 1;
-                } else if (state === 1) {
-                    flipper.className = 'flipper flipback';
-                    front.style.opacity = 0;
-                    back.style.opacity = 1;
-                    this.state = 0;
-                }
-            };
-
-            this.pulse = function () {
-                var pulseTimer = null;
-
-                flipper.className = 'flipper flipfront pulse';
-
-                pulseTimer = window.setTimeout(function () {
-                    flipper.parentNode.style.opacity = '0.3';
-                }, 1000);
-
-                pulseTimer = null;
-            };
-        },
         prepare = function () {
             for (let i = 0; i < (size) / matches; i = i + 1) {
                 list[i].image
-                    ? cards.push(new Card(`assets/${category}/images/${list[i].image}`, null, null, i))
-                    : cards.push(new Card(null, `${list[i].text}`, null, i));
+                    ? cards.push(new Card(`assets/${category}/images/${list[i].image}`, null, null, i, () => clicksCnt++))
+                    : cards.push(new Card(null, `${list[i].text}`, null, i, () => clicksCnt++ ));
                 list[i].video
-                    ? cards.push(new Card(null, null, `assets/${category}/videos/${list[i].video}`, i))
-                    : cards.push(new Card(null, `${list[i].text}`, null, i));
+                    ? cards.push(new Card(null, null, `assets/${category}/videos/${list[i].video}`, i, () => clicksCnt++))
+                    : cards.push(new Card(null, `${list[i].text}`, null, i, () => clicksCnt));
             }
 
             cards.shuffle();
@@ -300,6 +197,109 @@ var lists = {
     ]
 };
 
+class Card {
+    constructor(image, text, video, pair, clickCallBack) {
+        this.image = image;
+        this.text = text;
+        this.video = video;
+        this.pair = pair;
+
+        this.state = 0;
+        this.freezed = 0;
+        this.clicksCnt = 0;
+        this.updateGlobalClick = clickCallBack;
+
+        this.content = null;
+        this.front = null;
+        this.back = null;
+        this.flipper = null;
+    }
+
+    createCardDiv(idx) {
+        let content = this.content;
+        if (this.image != null) {
+            content = document.createElement('img');
+            content.src = this.image;
+        } else if (this.video != null) {
+            content = document.createElement('video');
+            let source = document.createElement('source');
+            source.src = this.video;
+            content.muted = true;
+            content.preload = true;
+            content.onclick = () => {
+                if (content.ended) {
+                    content.pause();
+                    content.currentTime = 0;
+                    content.play();
+                }
+            };
+            content.appendChild(source);
+        } else if (this.text != null) {
+            content = document.createElement('div');
+            content.innerHTML = this.text;
+            content.className = 'cardText';
+        }
+        this.content = content;
+
+        const back = document.createElement('div');
+        back.className = 'back face';
+        this.back = back;
+
+        const clicks = document.createElement('div');
+        clicks.className = 'clicks';
+        clicks.appendChild(document.createTextNode('\xA0'));
+
+        const front = document.createElement('div');
+        front.className = 'front face icon';
+        front.appendChild(this.content);
+        front.appendChild(clicks);
+        this.front = front;
+
+        const flipper = document.createElement('div');
+        flipper.className = 'flipper';
+        flipper.appendChild(this.back);
+        flipper.appendChild(this.front);
+        flipper.setAttribute('idx', idx);
+        this.flipper = flipper;
+
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.appendChild(flipper);
+        return card;
+    }
+
+    draw(idx, container) {
+        const card = this.createCardDiv(idx);
+        container.appendChild(card);
+    }
+
+    flip(state) {
+        if (this.state === 0) {
+            this.flipper.className = 'flipper flipfront';
+            this.front.style.opacity = '1';
+            this.back.style.opacity = '0';
+
+            this.state = 1;
+            this.updateGlobalClick();
+            this.clicksCnt++;
+            this.front.childNodes[1].childNodes[0].nodeValue = this.clicksCnt;
+
+        } else if (state === 1) {
+            this.flipper.className = 'flipper flipback';
+            this.front.style.opacity = '0';
+            this.back.style.opacity = '1';
+            this.state = 0;
+        }
+    }
+
+    pulse() {
+        this.flipper.className = 'flipper flipfront pulse';
+
+        window.setTimeout(() => {
+            this.flipper.parentNode.style.opacity = '0.3';
+        }, 1000);
+    }
+}
 
 class MemoryGame {
     constructor(evt) {
