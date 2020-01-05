@@ -15,11 +15,13 @@
  *
  * @author Mark Rolich <mark.rolich@gmail.com>
  */
-Array.prototype.shuffle = function () {
-    var temp, j, i;
+"use strict";
 
-    for (temp, j, i = this.length; i;) {
-        j = parseInt(Math.random() * i);
+Array.prototype.shuffle = function () {
+    let temp, j, i;
+
+    for (i = this.length; i;) {
+        j = Math.floor(Math.random() * i);
         temp = this[--i];
         this[i] = this[j];
         this[j] = temp;
@@ -38,137 +40,134 @@ Array.prototype.in_array = function (value) {
     return result;
 };
 
-var Level = function (evt, size, matches, category, list) {
-    "use strict";
+class Level {
+    constructor(evt, size, matches, category, list) {
+        this.clicksCnt = 0;
+        this.matchCount = 0;
+        this.openCards = [];
+        this.matches = matches;
+        this.size = size;
+        this.playfield = document.createElement('div');
+        this.playfieldWrapper = document.getElementById('playfield-wrapper');
+        this.mouseHndl = evt.attach('mousedown', this.playfield, this.play.bind(this));
 
-    var playfieldWrapper = document.getElementById('playfield-wrapper'),
-        playfield = document.createElement('div'),
-        cards = [],
-        mouseHndl = null,
-        self = this,
-        clicksCnt = 0,
-        matchCount = 0,
-        openCards = [],
-        prepare = function () {
-            for (let i = 0; i < (size) / matches; i = i + 1) {
-                list[i].image
-                    ? cards.push(new Card(`assets/${category}/images/${list[i].image}`, null, null, i, () => clicksCnt++))
-                    : cards.push(new Card(null, `${list[i].text}`, null, i, () => clicksCnt++ ));
-                list[i].video
-                    ? cards.push(new Card(null, null, `assets/${category}/videos/${list[i].video}`, i, () => clicksCnt++))
-                    : cards.push(new Card(null, `${list[i].text}`, null, i, () => clicksCnt));
-            }
+        if (this.size / this.matches > list.length) { // only necessary, because we only have 38 cards :'(
+            throw ('There are not enough cards to display the playing field');
+        } else if (this.size % this.matches !== 0) {
+            throw (`The number of cards ${this.size} cannot contain only matches of ${matches} cards.`);
+        }
 
-            cards.shuffle();
-        },
-        draw = function () {
-            let k = 0;
-            prepare();
+        this.playfieldWrapper.className = '';
+        this.playfield.className = 'play-field';
 
-            for (let i = 0; i < (size); i = i + 1) {
-                cards[i].draw(k, playfield);
-                k++;
-            }
-            playfieldWrapper.replaceChild(playfield, playfieldWrapper.childNodes[0]);
-        },
-        play = function (e, src) {
-            var isFace = (src.className.indexOf('face') !== -1),
-                isFlipper = (src.className === 'flipper'),
-                card = null,
-                i = 0,
-                backFlipTimer = null;
+        list.shuffle();
 
-            if (isFace || isFlipper) {
-                if (isFace) {
-                    src = src.parentNode;
-                }
+        this.onwin = () => true; // to be overwritten by the Game
 
-                card = cards[src.getAttribute('idx')];
+        this.draw(list, category);
 
-                if (card.freezed === 1) {
-                    return;
-                }
-
-                if (card.video != null) {
-                    card.content.currentTime = 1;
-                    card.content.play();
-                }
-
-                if (openCards.length === 0) {
-                    openCards.push(card);
-                } else if (!openCards.in_array(card) && openCards.length < matches) {
-                    if (openCards[0].pair === card.pair) {
-                        openCards.push(card);
-
-                        if (openCards.length === matches) {
-                            card.flip(0);
-
-                            for (i = 0; i < openCards.length; i = i + 1) {
-                                openCards[i].freezed = 1;
-                                openCards[i].pulse();
-                            }
-
-                            matchCount = matchCount + 1;
-
-                            openCards = [];
-                        }
-                    } else {
-                        evt.detach('mousedown', playfield, mouseHndl);
-
-                        let cardMultiplier = card.video != null ? 4 : 1;
-                        backFlipTimer = window.setTimeout(function () {
-                            card.flip(1);
-
-                            for (i = 0; i < openCards.length; i = i + 1) {
-                                openCards[i].flip(1);
-                            }
-
-                            openCards = [];
-                            mouseHndl = evt.attach('mousedown', playfield, play);
-                        }, cardMultiplier * 1000);
-
-                        backFlipTimer = null;
-                    }
-                }
-
-                if (card.state === 0) {
-                    card.flip(0);
-                }
-
-                if (matchCount === (size) / matches) {
-                    playfieldWrapper.className = 'win';
-
-                    window.setTimeout(function () {
-                        playfield.className = 'play-field win';
-                        self.onwin(clicksCnt, Math.round(((size) * 100) / clicksCnt));
-                        playfieldWrapper.className = '';
-                    }, 1500);
-
-                }
-            }
-        };
-
-    if ((size) / matches > list.length) { // only necessary, because we only have 38 cards :'(
-        throw ('There are not enough cards to display the playing field');
-    } else if ((size) % matches !== 0) {
-        throw ('Out of bounds');
     }
 
-    playfieldWrapper.className = '';
-    playfield.className = 'play-field';
+    prepare(cardSet, category) {
+        const cards = [];
+        for (let i = 0; i < this.size / this.matches; i = i + 1) {
+            cardSet[i].image
+                ? cards.push(new Card(`assets/${category}/images/${cardSet[i].image}`, null, null, i, () => this.clicksCnt++))
+                : cards.push(new Card(null, `${cardSet[i].text}`, null, i, () => this.clicksCnt++));
+            cardSet[i].video
+                ? cards.push(new Card(null, null, `assets/${category}/videos/${cardSet[i].video}`, i, () => this.clicksCnt++))
+                : cards.push(new Card(null, `${cardSet[i].text}`, null, i, () => this.clicksCnt));
+        }
+        cards.shuffle();
 
-    list.shuffle();
+        return cards;
+    }
 
-    this.onwin = function () {
-    };
+    draw(cardSet, category) {
+        this.cards = this.prepare(cardSet, category);
 
-    draw();
+        let k = 0;
+        for (let i = 0; i < (this.cards.length); i = i + 1) {
+            this.cards[i].draw(k, this.playfield);
+            k++;
+        }
+        this.playfieldWrapper.replaceChild(this.playfield, this.playfieldWrapper.childNodes[0]);
+    }
 
-    mouseHndl = evt.attach('mousedown', playfield, play);
-};
+    play(e, src) {
+        let isFace = (src.className.indexOf('face') !== -1),
+            isFlipper = (src.className === 'flipper'),
+            card = null,
+            i = 0;
+
+        if (isFace || isFlipper) {
+            if (isFace) {
+                src = src.parentNode;
+            }
+
+            card = this.cards[src.getAttribute('idx')];
+
+            if (card.freezed === 1) {
+                return;
+            }
+
+            if (card.video != null) {
+                card.content.currentTime = 1;
+                card.content.play();
+            }
+
+            if (this.openCards.length === 0) {
+                this.openCards.push(card);
+            } else if (!this.openCards.in_array(card) && this.openCards.length < this.matches) {
+                if (this.openCards[0].pair === card.pair) {
+                    this.openCards.push(card);
+
+                    if (this.openCards.length === this.matches) {
+                        card.flip(0);
+
+                        for (i = 0; i < this.openCards.length; i = i + 1) {
+                            this.openCards[i].freezed = 1;
+                            this.openCards[i].pulse();
+                        }
+
+                        this.matchCount++;
+
+                        this.openCards = [];
+                    }
+                } else {
+                    evt.detach('mousedown', this.playfield, this.mouseHndl);
+                    let cardMultiplier = card.video != null ? 4 : 1;
+                    window.setTimeout(() => {
+                        card.flip(1);
+                        for (let i = 0; i < this.openCards.length; i++) {
+                            this.openCards[i].flip(1);
+                        }
+
+                        this.openCards = [];
+                        this.mouseHndl = evt.attach('mousedown', this.playfield, this.play.bind(this));
+                    }, cardMultiplier * 1000);
+                }
+            }
+
+            if (card.state === 0) {
+                card.flip(0);
+            }
+
+            if (this.matchCount === this.size / this.matches) {
+                this.playfieldWrapper.className = 'win';
+
+                window.setTimeout(() => {
+                    this.playfield.className = 'play-field win';
+                    this.onwin(this.clicksCnt, Math.round(this.size * 100 / this.clicksCnt));
+                    this.playfieldWrapper.className = '';
+                }, 1500);
+            }
+        }
+    }
+}
 
 // Possible lists
-var lists = {
+let lists = {
     'Tiere': [
         {'image': 'bird.png', 'video': 'bird.mp4'},
         {'image': 'butterfly.png', 'video': 'butterfly.mp4'},
@@ -331,7 +330,7 @@ class MemoryGame {
         for (let i = 0; i < this.levelCtrls.children.length; i++) {
             this.levelCtrls.children[i].className = ''
         }
-        element.parentElement.className = 'selected'
+        element.parentElement.className = 'selected';
         if (pairs)
             this.levelSize = pairs * 2;
         else
