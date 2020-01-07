@@ -15,11 +15,13 @@
  *
  * @author Mark Rolich <mark.rolich@gmail.com>
  */
-Array.prototype.shuffle = function () {
-    var temp, j, i;
+"use strict";
 
-    for (temp, j, i = this.length; i;) {
-        j = parseInt(Math.random() * i);
+Array.prototype.shuffle = function () {
+    let temp, j, i;
+
+    for (i = this.length; i;) {
+        j = Math.floor(Math.random() * i);
         temp = this[--i];
         this[i] = this[j];
         this[j] = temp;
@@ -38,241 +40,135 @@ Array.prototype.in_array = function (value) {
     return result;
 };
 
-var Level = function (evt, size, matches, category, list) {
-    "use strict";
+class Level {
+    constructor(evt, size, matches, category, list) {
+        this.clicksCnt = 0;
+        this.matchCount = 0;
+        this.openCards = [];
+        this.matches = matches;
+        this.size = size;
+        this.playfield = document.createElement('div');
+        this.playfieldWrapper = document.getElementById('playfield-wrapper');
+        this.mouseHndl = evt.attach('mousedown', this.playfield, this.play.bind(this));
 
-    var playfieldWrapper = document.getElementById('playfield-wrapper'),
-        playfield = document.createElement('div'),
-        cards = [],
-        mouseHndl = null,
-        self = this,
-        clicksCnt = 0,
-        matchCount = 0,
-        openCards = [],
-        Card = function (image, text, video, pair) {
-            this.state = 0;
-            this.freezed = 0;
-            this.image = image;
-            this.text = text;
-            this.video = video;
-            this.pair = pair;
-            this.clicksCnt = 0;
-            this.content = null;
+        if (this.size / this.matches > list.length) { // only necessary, because we only have 38 cards :'(
+            throw ('There are not enough cards to display the playing field');
+        } else if (this.size % this.matches !== 0) {
+            throw (`The number of cards ${this.size} cannot contain only matches of ${matches} cards.`);
+        }
 
-            var flipper = null,
-                front = null,
-                back = null,
-                clicks = null;
+        this.playfieldWrapper.className = '';
+        this.playfield.className = 'play-field';
 
-            this.draw = function (idx, container) {
-                var card = document.createElement('div'),
-                    content = null;
+        list.shuffle();
 
-                flipper = card.cloneNode(false);
-                if (this.image != null) {
-                    content = document.createElement('img');
-                    content.src = this.image;
-                } else if (this.video != null) {
-                    content = document.createElement('video');
-                    let source = document.createElement('source');
-                    source.src = this.video;
-                    content.muted = true;
-                    content.preload = true;
-                    content.onclick = () => {
-                        if (content.ended) {
-                            content.pause();
-                            content.currentTime = 0;
-                            content.play();
-                        }
-                    };
-                    content.appendChild(source);
-                } else if (this.text != null) {
-                    content = document.createElement('div');
-                    content.innerHTML = this.text;
-                    content.className = 'cardText';
-                }
+        this.onwin = () => true; // to be overwritten by the Game
 
-                front = card.cloneNode(false);
-                back = card.cloneNode(false);
-                clicks = card.cloneNode(false);
+        this.draw(list, category);
 
-                card.className = 'card';
-                flipper.className = 'flipper';
-                front.className = 'front face icon';
-                back.className = 'back face';
-                clicks.className = 'clicks';
-                clicks.appendChild(document.createTextNode('\xA0'));
-
-                front.appendChild(content);
-                front.appendChild(clicks);
-
-                this.content = content;
-                // content = content.cloneNode(false);
-                // content.nodeValue = '\xA0';
-                // back.appendChild(txt);
-
-                flipper.appendChild(back);
-                flipper.appendChild(front);
-
-                flipper.setAttribute('idx', idx);
-
-                card.appendChild(flipper);
-                container.appendChild(card);
-            };
-
-            this.flip = function (state) {
-                if (state === 0) {
-                    flipper.className = 'flipper flipfront';
-                    front.style.opacity = 1;
-                    back.style.opacity = 0;
-
-                    this.state = 1;
-                    this.clicksCnt = this.clicksCnt + 1;
-
-                    clicks.childNodes[0].nodeValue = this.clicksCnt;
-
-                    clicksCnt = clicksCnt + 1;
-                } else if (state === 1) {
-                    flipper.className = 'flipper flipback';
-                    front.style.opacity = 0;
-                    back.style.opacity = 1;
-                    this.state = 0;
-                }
-            };
-
-            this.pulse = function () {
-                var pulseTimer = null;
-
-                flipper.className = 'flipper flipfront pulse';
-
-                pulseTimer = window.setTimeout(function () {
-                    flipper.parentNode.style.opacity = '0.3';
-                }, 1000);
-
-                pulseTimer = null;
-            };
-        },
-        prepare = function () {
-            for (let i = 0; i < (size) / matches; i = i + 1) {
-                list[i].image
-                    ? cards.push(new Card(`assets/${category}/images/${list[i].image}`, null, null, i))
-                    : cards.push(new Card(null, `${list[i].text}`, null, i));
-                list[i].video
-                    ? cards.push(new Card(null, null, `assets/${category}/videos/${list[i].video}`, i))
-                    : cards.push(new Card(null, `${list[i].text}`, null, i));
-            }
-
-            cards.shuffle();
-        },
-        draw = function () {
-            let k = 0;
-            prepare();
-
-            for (let i = 0; i < (size); i = i + 1) {
-                cards[i].draw(k, playfield);
-                k++;
-            }
-            playfieldWrapper.replaceChild(playfield, playfieldWrapper.childNodes[0]);
-        },
-        play = function (e, src) {
-            var isFace = (src.className.indexOf('face') !== -1),
-                isFlipper = (src.className === 'flipper'),
-                card = null,
-                i = 0,
-                backFlipTimer = null;
-
-            if (isFace || isFlipper) {
-                if (isFace) {
-                    src = src.parentNode;
-                }
-
-                card = cards[src.getAttribute('idx')];
-
-                if (card.freezed === 1) {
-                    return;
-                }
-
-                if (card.video != null) {
-                    card.content.currentTime = 1;
-                    card.content.play();
-                }
-
-                if (openCards.length === 0) {
-                    openCards.push(card);
-                } else if (!openCards.in_array(card) && openCards.length < matches) {
-                    if (openCards[0].pair === card.pair) {
-                        openCards.push(card);
-
-                        if (openCards.length === matches) {
-                            card.flip(0);
-
-                            for (i = 0; i < openCards.length; i = i + 1) {
-                                openCards[i].freezed = 1;
-                                openCards[i].pulse();
-                            }
-
-                            matchCount = matchCount + 1;
-
-                            openCards = [];
-                        }
-                    } else {
-                        evt.detach('mousedown', playfield, mouseHndl);
-
-                        let cardMultiplier = card.video != null ? 4 : 1;
-                        backFlipTimer = window.setTimeout(function () {
-                            card.flip(1);
-
-                            for (i = 0; i < openCards.length; i = i + 1) {
-                                openCards[i].flip(1);
-                            }
-
-                            openCards = [];
-                            mouseHndl = evt.attach('mousedown', playfield, play);
-                        }, cardMultiplier * 1000);
-
-                        backFlipTimer = null;
-                    }
-                }
-
-                if (card.state === 0) {
-                    card.flip(0);
-                }
-
-                if (matchCount === (size) / matches) {
-                    playfieldWrapper.className = 'win';
-
-                    window.setTimeout(function () {
-                        playfield.className = 'play-field win';
-                        self.onwin(clicksCnt, Math.round(((size) * 100) / clicksCnt));
-                        playfieldWrapper.className = '';
-                    }, 1500);
-
-                }
-            }
-        };
-
-    if ((size) / matches > list.length) { // only necessary, because we only have 38 cards :'(
-        throw ('There are not enough cards to display the playing field');
-    } else if ((size) % matches !== 0) {
-        throw ('Out of bounds');
     }
 
-    playfieldWrapper.className = '';
-    playfield.className = 'play-field';
+    prepare(cardSet, category) {
+        const cards = [];
+        for (let i = 0; i < this.size / this.matches; i = i + 1) {
+            cardSet[i].image
+                ? cards.push(new Card(`assets/${category}/images/${cardSet[i].image}`, null, null, i, () => this.clicksCnt++))
+                : cards.push(new Card(null, `${cardSet[i].text}`, null, i, () => this.clicksCnt++));
+            cardSet[i].video
+                ? cards.push(new Card(null, null, `assets/${category}/videos/${cardSet[i].video}`, i, () => this.clicksCnt++))
+                : cards.push(new Card(null, `${cardSet[i].text}`, null, i, () => this.clicksCnt));
+        }
+        cards.shuffle();
 
-    list.shuffle();
+        return cards;
+    }
 
-    this.onwin = function () {
-    };
+    draw(cardSet, category) {
+        this.cards = this.prepare(cardSet, category);
 
-    draw();
+        let k = 0;
+        for (let i = 0; i < (this.cards.length); i = i + 1) {
+            this.cards[i].draw(k, this.playfield);
+            k++;
+        }
+        this.playfieldWrapper.replaceChild(this.playfield, this.playfieldWrapper.childNodes[0]);
+    }
 
-    mouseHndl = evt.attach('mousedown', playfield, play);
-};
+    play(e, src) {
+        let isFace = (src.className.indexOf('face') !== -1),
+            isFlipper = (src.className === 'flipper'),
+            card = null,
+            i = 0;
+
+        if (isFace || isFlipper) {
+            if (isFace) {
+                src = src.parentNode;
+            }
+
+            card = this.cards[src.getAttribute('idx')];
+
+            if (card.freezed === 1) {
+                return;
+            }
+
+            if (card.video != null) {
+                card.content.currentTime = 1;
+                card.content.play();
+            }
+
+            if (this.openCards.length === 0) {
+                this.openCards.push(card);
+            } else if (!this.openCards.in_array(card) && this.openCards.length < this.matches) {
+                if (this.openCards[0].pair === card.pair) {
+                    this.openCards.push(card);
+
+                    if (this.openCards.length === this.matches) {
+                        card.flip(0);
+
+                        for (i = 0; i < this.openCards.length; i = i + 1) {
+                            this.openCards[i].freezed = 1;
+                            this.openCards[i].pulse();
+                        }
+
+                        this.matchCount++;
+
+                        this.openCards = [];
+                    }
+                } else {
+                    evt.detach('mousedown', this.playfield, this.mouseHndl);
+                    let cardMultiplier = card.video != null ? 4 : 1;
+                    window.setTimeout(() => {
+                        card.flip(1);
+                        for (let i = 0; i < this.openCards.length; i++) {
+                            this.openCards[i].flip(1);
+                        }
+
+                        this.openCards = [];
+                        this.mouseHndl = evt.attach('mousedown', this.playfield, this.play.bind(this));
+                    }, cardMultiplier * 1000);
+                }
+            }
+
+            if (card.state === 0) {
+                card.flip(0);
+            }
+
+            if (this.matchCount === this.size / this.matches) {
+                this.playfieldWrapper.className = 'win';
+
+                window.setTimeout(() => {
+                    this.playfield.className = 'play-field win';
+                    this.onwin(this.clicksCnt, Math.round(this.size * 100 / this.clicksCnt));
+                    this.playfieldWrapper.className = '';
+                }, 1500);
+            }
+        }
+    }
+}
 
 // Possible lists
-var lists = {
-    'animals': [
+let lists = {
+    'Tiere': [
         {'image': 'bird.png', 'video': 'bird.mp4'},
         {'image': 'butterfly.png', 'video': 'butterfly.mp4'},
         {'image': 'cat.png', 'video': 'cat.mp4'},
@@ -294,12 +190,115 @@ var lists = {
         {'image': 'snake.png', 'video': 'snake.mp4'},
         {'image': 'spider.png', 'video': 'spider.mp4'}
     ],
-    'it': [
+    'IT': [
         {'text': 'Javascript'},
         {'text': 'Scala'}
     ]
 };
 
+class Card {
+    constructor(image, text, video, pair, clickCallBack) {
+        this.image = image;
+        this.text = text;
+        this.video = video;
+        this.pair = pair;
+
+        this.state = 0;
+        this.freezed = 0;
+        this.clicksCnt = 0;
+        this.updateGlobalClick = clickCallBack;
+
+        this.content = null;
+        this.front = null;
+        this.back = null;
+        this.flipper = null;
+    }
+
+    createCardDiv(idx) {
+        let content = this.content;
+        if (this.image != null) {
+            content = document.createElement('img');
+            content.src = this.image;
+        } else if (this.video != null) {
+            content = document.createElement('video');
+            let source = document.createElement('source');
+            source.src = this.video;
+            content.muted = true;
+            content.preload = true;
+            content.onclick = () => {
+                if (content.ended) {
+                    content.pause();
+                    content.currentTime = 0;
+                    content.play();
+                }
+            };
+            content.appendChild(source);
+        } else if (this.text != null) {
+            content = document.createElement('div');
+            content.innerHTML = this.text;
+            content.className = 'cardText';
+        }
+        this.content = content;
+
+        const back = document.createElement('div');
+        back.className = 'back face';
+        this.back = back;
+
+        const clicks = document.createElement('div');
+        clicks.className = 'clicks';
+        clicks.appendChild(document.createTextNode('\xA0'));
+
+        const front = document.createElement('div');
+        front.className = 'front face icon';
+        front.appendChild(this.content);
+        front.appendChild(clicks);
+        this.front = front;
+
+        const flipper = document.createElement('div');
+        flipper.className = 'flipper';
+        flipper.appendChild(this.back);
+        flipper.appendChild(this.front);
+        flipper.setAttribute('idx', idx);
+        this.flipper = flipper;
+
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.appendChild(flipper);
+        return card;
+    }
+
+    draw(idx, container) {
+        const card = this.createCardDiv(idx);
+        container.appendChild(card);
+    }
+
+    flip(state) {
+        if (this.state === 0) {
+            this.flipper.className = 'flipper flipfront';
+            this.front.style.opacity = '1';
+            this.back.style.opacity = '0';
+
+            this.state = 1;
+            this.updateGlobalClick();
+            this.clicksCnt++;
+            this.front.childNodes[1].childNodes[0].nodeValue = this.clicksCnt;
+
+        } else if (state === 1) {
+            this.flipper.className = 'flipper flipback';
+            this.front.style.opacity = '0';
+            this.back.style.opacity = '1';
+            this.state = 0;
+        }
+    }
+
+    pulse() {
+        this.flipper.className = 'flipper flipfront pulse';
+
+        window.setTimeout(() => {
+            this.flipper.parentNode.style.opacity = '0.3';
+        }, 1000);
+    }
+}
 
 class MemoryGame {
     constructor(evt) {
@@ -309,8 +308,9 @@ class MemoryGame {
         this.levelCtrls = document.getElementById('levels')
         this.categoryCtrls = document.getElementById('categories')
         this.currentLvl = null
-        this.levelCategory = 'animals'
-        this.levelSize = 40
+        this.levelSize = 2; // minimum number of cards
+        this.updateCategory(this.categoryCtrls.childNodes[1].firstChild);
+        this.updateSize(this.levelCtrls.childNodes[1].firstChild);
 
         this.start();
     }
@@ -326,21 +326,27 @@ class MemoryGame {
         this.info.innerHTML = 'Klicke die Karten an, um <strong>' + matches + 'er</strong> Paare aufzudecken.';
     }
 
-    updateSize(newSize, element) {
+    updateSize(element, pairs) {
         for (let i = 0; i < this.levelCtrls.children.length; i++) {
             this.levelCtrls.children[i].className = ''
         }
-        element.parentElement.className = 'selected'
-        this.levelSize = newSize;
+        element.parentElement.className = 'selected';
+        if (pairs)
+            this.levelSize = pairs * 2;
+        else
+            this.levelSize = element.textContent * 2;
         this.start()
     }
 
-    updateCategory(newCategory, element) {
+    updateCategory(element, newCategory) {
         for (let i = 0; i < this.categoryCtrls.children.length; i++) {
             this.categoryCtrls.children[i].className = ''
         }
-        element.parentElement.className = 'selected'
-        this.levelCategory = newCategory;
+        element.parentElement.className = 'selected';
+        if (newCategory)
+            this.levelCategory = newCategory;
+        else
+            this.levelCategory = element.textContent;
         this.start()
     };
-};
+}

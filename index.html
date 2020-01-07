@@ -11,8 +11,8 @@
 <p id="game-info">&nbsp;</p>
 
 <ul id="categories">
-    <li class="selected"><a href="javascript:" onclick="game.updateCategory('animals', this)">Tiere</a></li>
-    <li><a href="javascript:" onclick="game.updateCategory('it', this)">IT</a></li>
+    <li class="selected"><a href="javascript:" onclick="game.updateCategory(this, 'Tiere')">Tiere</a></li>
+    <li><a href="javascript:" onclick="game.updateCategory(this)">IT</a></li>
     <li><a id="addCategories" href="javascript:"
            onclick="alert('Sorry, leider gibt es noch keinen automatischen Weg, neue Kategorien anzulegen.'
            +' Aber du kannst mir gerne unter agnes.koehler@codecentric.de eine E-Mail schicken mit Videos und Bildern!')"> + </a></li>
@@ -20,10 +20,10 @@
 
 
 <ul id="levels">
-    <li class="selected"><a href="javascript:" onclick="game.updateSize(40, this)">20</a></li>
-    <li><a href="javascript:" onclick="game.updateSize(4, this)">2</a></li>
-    <li><a href="javascript:" onclick="game.updateSize(8, this)">4</a></li>
-    <li><a href="javascript:" onclick="game.updateSize(16, this)">8</a></li>
+    <li><a href="javascript:" onclick="game.updateSize(this, 2)">2</a></li>
+    <li><a href="javascript:" onclick="game.updateSize(this)">4</a></li>
+    <li><a href="javascript:" onclick="game.updateSize(this)">8</a></li>
+    <li class="selected"><a href="javascript:" onclick="game.updateSize(this)">20</a></li>
 </ul>
 
 <div id="playfield-wrapper">&nbsp;<div class="win-text">GEWONNEN!!</div>
